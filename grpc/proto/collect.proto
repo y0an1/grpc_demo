@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.protobuf";
+option java_outer_classname = "CollectCProto";
+
+package collect;
+
+service CollectService {
+  rpc add_devices(DeviceInfo)               returns (CollectResult);
+  rpc add_file_info(FileInfo)               returns (CollectResult);
+  rpc add_file_context(stream FileContext)  returns (CollectResult);
+  rpc add_prop_info(PropInfo)               returns (CollectResult);
+  rpc add_linux_api_info(ApiInfo)           returns (CollectResult);
+}
+
+message CollectResult {
+  bool    ok                = 1; // 等于0表示成功，其他值表示失败
+  int32   result            = 2; // 返回的结果
+  string  msg               = 3; // 返回的结果或者具体的错误信息
+}
+
+message DeviceInfo {
+  string  model             = 1;
+  string  product           = 2;
+}
+
+message FileInfo {
+  int32   dev_id            = 1;
+  string  file_path         = 2;
+  string  file_attr         = 3;
+  string  file_attr_ex      = 4;
+  int32   errno             = 5;
+  bytes   file_context      = 6;
+  string  file_type         = 7;
+}
+
+message FileContext  {
+  int32   file_id           = 1;
+  int32   verify            = 2;
+  int32   file_context_len  = 3;
+  bytes   file_context      = 4;
+}
+
+message PropInfo {
+  int32 dev_id              = 1;
+  string local              = 2; // java、native
+  string origin             = 3; // classname、filename
+  string key                = 4;
+  string value              = 5;
+}
+
+message ApiInfo {
+  int32   dev_id            = 1;
+  string  api_name          = 2;
+  string  api_args          = 3;
+  string  api_result        = 4;
+  string  api_errno         = 5;
+}
